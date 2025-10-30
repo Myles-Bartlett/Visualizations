@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BudgetViz - Academic Budget Visualization</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="components/navbar.js"></script>
+    <script src="components/footer.js"></script>
+</head>
+<body class="bg-gray-50">
+    <custom-navbar></custom-navbar>
+    
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4 md:mb-0">Program Budget Visualization</h1>
+            <div class="flex space-x-2">
+                <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">Export PDF</button>
+                <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Share</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Summary Cards -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Program Overview</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-blue-50 p-4 rounded-md">
+                        <p class="text-sm text-gray-500">Total Programs</p>
+                        <p class="text-2xl font-bold text-blue-600">4</p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-md">
+                        <p class="text-sm text-gray-500">Total Budget</p>
+                        <p class="text-2xl font-bold text-green-600">$78,400</p>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-md">
+                        <p class="text-sm text-gray-500">Avg Response Rate</p>
+                        <p class="text-2xl font-bold text-purple-600">69.9%</p>
+                    </div>
+                    <div class="bg-yellow-50 p-4 rounded-md">
+                        <p class="text-sm text-gray-500">Avg Budget Delta</p>
+                        <p class="text-2xl font-bold text-yellow-600">-$5,130</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Response Rate Chart -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Response Rates</h2>
+                <canvas id="responseRateChart" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- Main Data Table -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Students</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responses</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">In</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Positive %</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Potential Budget</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Current Budget</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Forecast</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delta</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Illustration</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">112</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">55</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">55</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">100.0%</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$39,200.00</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$19,250.00</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$39,200.00</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$0.00</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Interaction Design</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">71</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">27</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">8</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">29.6%</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$24,850.00</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$2,800.00</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$7,362.96</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600">-$17,487.04</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Experiential Design</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">11</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">66.7%</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$3,850.00</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$700.00</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$2,566.67</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600">-$1,283.33</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Photography</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">30</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">83.3%</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$10,500.00</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$3,500.00</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$8,750.00</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600">-$1,750.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Budget Visualization -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Budget Comparison</h2>
+                <canvas id="budgetChart" height="300"></canvas>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Budget Deltas</h2>
+                <canvas id="deltaChart" height="300"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <custom-footer></custom-footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            feather.replace();
+            
+            // Response Rate Chart
+            const responseCtx = document.getElementById('responseRateChart').getContext('2d');
+            new Chart(responseCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Illustration', 'Interaction Design', 'Experiential Design', 'Photography'],
+                    datasets: [{
+                        label: 'Positive Response Rate',
+                        data: [100, 29.6, 66.7, 83.3],
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(153, 102, 255, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Budget Comparison Chart
+            const budgetCtx = document.getElementById('budgetChart').getContext('2d');
+            new Chart(budgetCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Illustration', 'Interaction Design', 'Experiential Design', 'Photography'],
+                    datasets: [
+                        {
+                            label: 'Potential Budget',
+                            data: [39200, 24850, 3850, 10500],
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Current Budget',
+                            data: [19250, 2800, 700, 3500],
+                            backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Forecast',
+                            data: [39200, 7362.96, 2566.67, 8750],
+                            backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Delta Chart
+            const deltaCtx = document.getElementById('deltaChart').getContext('2d');
+            new Chart(deltaCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Illustration', 'Interaction Design', 'Experiential Design', 'Photography'],
+                    datasets: [{
+                        label: 'Budget Delta',
+                        data: [0, -17487.04, -1283.33, -1750],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(255, 99, 132, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+    <script src="script.js"></script>
+    <script>feather.replace();</script>
+<script src="https://huggingface.co/deepsite/deepsite-badge.js"></script>
+</body>
+</html>
